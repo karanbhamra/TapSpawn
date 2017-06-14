@@ -11,7 +11,7 @@ import UIKit
 class ViewController: UIViewController {
 	var count = 0
 	let maxLimit = 10
-
+	
 	@IBOutlet weak var resetButton: UIButton!
 	
 	override func viewDidLoad() {
@@ -19,7 +19,7 @@ class ViewController: UIViewController {
 		// Do any additional setup after loading the view, typically from a nib.
 		title = "Count : \(count)"
 	}
-
+	
 	override func didReceiveMemoryWarning() {
 		super.didReceiveMemoryWarning()
 		// Dispose of any resources that can be recreated.
@@ -38,44 +38,47 @@ class ViewController: UIViewController {
 		count = newCount
 		title = "Count : \(count)"
 	}
-	
+	func drawRandomShape(touchLocation: UITouch) {
+		let position = touchLocation.location(in: self.view)
+		let x = position.x
+		let y = position.y
+		let randWidth = CGFloat(arc4random_uniform(80) + 10)
+		let randHeight = CGFloat(arc4random_uniform(80) + 10)
+		let firstframe = CGRect(x: x, y: y, width: randWidth, height: randHeight)
+		
+		
+		let firstview = UIView(frame: firstframe)
+		firstview.backgroundColor = randomColor()
+		
+		if (Double(arc4random_uniform(100)) < 50) {
+			firstview.layer.cornerRadius = 25
+		}
+		
+		view.addSubview(firstview)
+		print("Adding subview")
+		
+	}
 	override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-		var x: CGFloat
-		var y: CGFloat
+		
 		if let touch = touches.first {
 			if (count < maxLimit) {
-				let position = touch.location(in: self.view)
-				x = position.x
-				y = position.y
-				let randWidth = CGFloat(arc4random_uniform(80) + 10)
-				let randHeight = CGFloat(arc4random_uniform(80) + 10)
-				let firstframe = CGRect(x: x, y: y, width: randWidth, height: randHeight)
-				
-				
-				let firstview = UIView(frame: firstframe)
-				firstview.backgroundColor = randomColor()
-				
-				if (Double(arc4random_uniform(100)) < 50) {
-					firstview.layer.cornerRadius = 25
-				}
-				
-				view.addSubview(firstview)
-				print("Adding subview")
+				drawRandomShape(touchLocation: touch)
 				
 				count += 1
 				updateTitle(newCount: count)
 			} // end count < maxlimit
 			else {
 				view.subviews[0].removeFromSuperview()
-				count -= 1
-				updateTitle(newCount: count)
+				
 				print("Removing subview")
+				
+				drawRandomShape(touchLocation: touch)
 			}
 			
 			
 		} // end touch
 	}
-
+	
 	@IBAction func resetButtonClicked(_ sender: Any) {
 		print("Reset pressed")
 		if (count > 0) {
